@@ -1,0 +1,28 @@
+{% extends "tasks/base.html" %}
+{% block content %}
+    <div class="col-md-4">
+        <div class="content-section">
+            <h3>Entries</h3>
+            <p class='text-muted'>
+                <ul class="list-group">
+                    {% for post in post_list %}
+                        <li class="list-group-item list-group-item-light"><a class="article-title" href="?id={{ post.id }}">{{ post.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </p>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <h2><a class="article-title" href="/post/{{ post.pk }}/update">{{ post.title }}</a></h2>
+                    <small class="text-muted">Date Created: {{ post.date_posted}}</small>
+                    <small class="text-muted">Last Edited: {{ post.date_edited}}</small>
+                </div>
+
+                <p class="article-content">{{ post.content }}</p>
+            </div>
+        </article>
+    </div>
+{% endblock content %}
