@@ -1,4 +1,7 @@
 {% extends "tasks/base.html" %}
+{% block header %}
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.css" rel="stylesheet">
+{% endblock header %}
 {% block content %}
     <div class="col-md-4">
         <div class="content-section">
@@ -21,8 +24,12 @@
                     <small class="text-muted">Last Edited: {{ post.date_edited}}</small>
                 </div>
 
-                <p class="article-content">{{ post.content }}</p>
+                <p class="article-content">{{ post.content | safe }}</p>
             </div>
         </article>
     </div>
+    
 {% endblock content %}
+{% block js %}
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.js"></script>
+{% endblock js %}
