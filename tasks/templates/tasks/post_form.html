@@ -1,59 +1,144 @@
-{% extends "tasks/base.html" %}
+{% extends "tasks/leftbar.html" %}
 {% load crispy_forms_tags %}
 {% block header %}
-<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.css" rel="stylesheet">
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.css" rel="stylesheet">
 {% endblock header %}
 {% block content %}
+    <div id="pk" style='display: none;' data-pk="{{ post.pk }}"></div>
     <div class="col-md-8">
         <div class="content-section">
-            <form method="POST">
+            <form method="POST" class="article-metadata" id="entryform">
                 {% csrf_token %}
                 <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Blog Post</legend>
-                    {{ form|crispy }}
+                {{ form|crispy }}
                 </fieldset>
                 <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit">Post</button>
+                    <button class="btn btn-outline-info" type="submit" id='post'>Save Above Changes</button>
                 </div>
             </form>
+            <div>
+                <ul class="list-group" id="subtasklist">
+                {% for sub in sublist %}
+                    <li class="list-group-item list-group-item-light substask" data-pk="{{ sub.pk }}"><span class="article-title" >{{ sub.title }}</span><span class="remove-sub" onclick="removeSub({{ sub.pk }})">remove</span></li>    
+                {% endfor %}
+                </ul>
+                <button class="btn btn-outline-info" type="button" id="addTask">Add Subtask</button>
+            </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="taskListModal" tabindex="-1" role="dialog" aria-labelledby="taskListModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskListModalLabel">Select Task To Reference</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control" id="myInputModal" type="text" placeholder="Search..">
+                    <ul class="list-group" id="modalList">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>         
+      
 {% endblock content %}
 {% block js %}
 <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.js"></script>
 <script>
 
-    var testButton = function(context) {
-        var ui = $.summernote.ui;
-        var button = ui.button({
-            contents: '<i class="fa fa-pencil"/> Highlight',
-            tooltip: 'Highlight text with red color',
-            click: function() {
-                window.alert("BOOM");
-            }
-        });
-
-        return button.render();
+    function removeSub(taskId){
+        $('#subtasklist li[data-pk="'+taskId+'"]').remove();
+        addRemoveSub(taskId,false);
     }
 
-    $(document).ready(function() {
-        $('#id_content').summernote({
-            height: 400,                 // set editor height
-            minHeight: 200,             // set minimum height of editor
-            maxHeight: null,             // set maximum height of editor
-            focus: true,                  // set focus to editable area after initializing summernote
-            toolbar: [
-                ['insert',['link']],
-                ['style',['test','bold', 'italic', 'underline', 'clear']],
-                ['font', ['strikethrough', 'superscript', 'subscript']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['height', ['height']]
-            ],
-            buttons: {
-                test: testButton
+    $("#addTask").on('click',function() {
+        $('#modalList').empty();
+        $.ajax({
+            url: '/ajax/subtasks/',
+            data: {
+                'task': $('#pk').data('pk') //update this
+            },
+            datatype: 'json',
+            success: function(data) {
+                data = JSON.parse(data);
+                $.each(data, function() {
+                    tasktitle = this.fields.title;
+                    taskId = this.pk;
+                    if($('#subtasklist [data-pk="'+taskId+'"]').length == 0){
+                        $('#modalList').append('<li class="subtaskSelect list-group-item list-group-item-light" data-pk="'+taskId+'"><span class="article-title">'+tasktitle+'</span></li>')
+                            .find('[data-pk="'+taskId+'"]').on('click',function() {
+                                tasktitle = $(this).html();
+                                taskId = $(this).data('pk');
+                                $('#subtasklist').append('<li class="list-group-item list-group-item-light" data-pk="'+taskId+'"><span class="article-title">'+tasktitle+'</span><span class="remove-sub" onclick="removeSub('+taskId+')">remove</span></li>')
+                                $('#taskListModal').modal('hide');
+                                addRemoveSub(taskId,true);
+                            });
+                    }
+                });
+            },
+            error: function(data) {
+                console.log("failed");
             }
+        })
+        $('#taskListModal').modal('show');
+    });
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            // if not safe, set csrftoken
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+    function addRemoveSub(taskId,add) {
+        csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        $.ajax({
+            url: '/ajax/updatesubs/',
+            data: {
+                data: JSON.stringify({
+                    task: $('#pk').data('pk'), //update this
+                    child: taskId,
+                    action: add
+                })
+            },
+            datatype: 'json',
+            type: 'POST'
+        })
+    }
+
+
+    $("#myInputLeftBar").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#leftBarList li").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+
+    $("#myInputModal").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#taskListModal li").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+    $(document).ready(function() {
+
+        $('#id_content').summernote({
+            height: 300,                 // set editor height
+            minHeight: 200,             // set minimum height of editor
         }
         );
     });

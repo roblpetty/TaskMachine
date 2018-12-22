@@ -1,30 +1,24 @@
-{% extends "tasks/base.html" %}
+{% extends "tasks/leftbar.html" %}
 {% block header %}
 <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.css" rel="stylesheet">
 {% endblock header %}
 {% block content %}
-    <div class="col-md-4">
-        <div class="content-section">
-            <h3>Entries</h3>
-            <p class='text-muted'>
-                <ul class="list-group">
-                    {% for post in post_list %}
-                        <li class="list-group-item list-group-item-light"><a class="article-title" href="?id={{ post.id }}">{{ post.title }}</a></li>
-                    {% endfor %}
-                </ul>
-            </p>
-        </div>
-    </div>
     <div class="col-md-8">
         <article class="media content-section">
             <div class="media-body">
                 <div class="article-metadata">
-                    <h2><a class="article-title" href="/post/{{ post.pk }}/update">{{ post.title }}</a></h2>
+                    <h2><span class="article-title">{{ post.title }}</a></h2>
                     <small class="text-muted">Date Created: {{ post.date_posted}}</small>
+                    <br>
                     <small class="text-muted">Last Edited: {{ post.date_edited}}</small>
+                    <a class="article-title edit" href="/post/{{ post.pk }}/update">
+                        edit
+                        <img src="media/edit-button.png" class="edit" alt="Edit Post" width="25" height="25">
+                    </a>
                 </div>
-
-                <p class="article-content">{{ post.content | safe }}</p>
+                <div class="article-metadata">
+                    <p class="article-content">{{ post.content | safe }}</p>
+                </div>
             </div>
         </article>
     </div>

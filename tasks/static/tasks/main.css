@@ -82,3 +82,14 @@ a.article-title:hover {
 .account-heading {
     font-size: 2.5rem;
 }
+
+
+div.scroll {
+    overflow: auto;
+    height: 75vh;
+}
+
+a.edit {
+    float: right;
+    
+}
