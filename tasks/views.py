@@ -26,6 +26,7 @@ class PostListView(LoginRequiredMixin,ListView):
             self.request.GET.get('id')
         
         context['post'] = Post.objects.get(pk=taskId)
+        context['sublist'] = context['post'].children.all()
         return context
 
     def get_queryset(self, **kwargs):

@@ -58,7 +58,7 @@ a.article-title:hover {
 .article-metadata {
     padding-bottom: 1px;
     margin-bottom: 4px;
-    border-bottom: 1px solid #e3e3e3
+    border-bottom: 1px solid #e3e3e3; 
 }
 
 .article-metadata a:hover {
@@ -89,7 +89,22 @@ div.scroll {
     height: 75vh;
 }
 
-a.edit {
-    float: right;
-    
+div.edit {
+    position: absolute;
+    right: 30px;
+    top: 20px;
+}
+
+div.dates{
+    padding-right: 20px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+div.attributes{
+    display: inline-block;
+}
+
+div.relative{
+    position: relative;
 }

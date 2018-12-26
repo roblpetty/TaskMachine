@@ -6,21 +6,55 @@
     <div class="col-md-8">
         <article class="media content-section">
             <div class="media-body">
-                <div class="article-metadata">
-                    <h2><span class="article-title">{{ post.title }}</a></h2>
-                    <small class="text-muted">Date Created: {{ post.date_posted}}</small>
-                    <br>
-                    <small class="text-muted">Last Edited: {{ post.date_edited}}</small>
+                <div class="media-body relative">
+                    <div class="article-metadata">
+                        <h2><span class="article-title">{{ post.title }}</a></h2>
+                        <div class="dates">
+                            <small class="text-muted">Date Created: {{ post.date_posted}}</small>
+                            <br>
+                            <small class="text-muted">Last Edited: {{ post.date_edited}}</small>
+                            <br>
+                            <small class="text-muted">Due Date: {{ post.due_date }}</small>
+                        </div>
+                        <div class="attributes">
+                            <small class="text-muted">Competed: {% if post.complete %}Yes{% else %}No{% endif %}</small>
+                            <br>
+                            <small class="text-muted">Optional: {% if post.optional %}Yes{% else %}No{% endif %}</small>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="edit">
                     <a class="article-title edit" href="/post/{{ post.pk }}/update">
                         edit
-                        <img src="media/edit-button.png" class="edit" alt="Edit Post" width="25" height="25">
+                        <img src="media/edit-button.png" alt="Edit Post" width="25" height="25">
                     </a>
                 </div>
-                <div class="article-metadata">
+                <div>
                     <p class="article-content">{{ post.content | safe }}</p>
                 </div>
             </div>
         </article>
+        <div class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <h4>Subtasks</h4>
+                </div>
+                <div>
+                    <ul class="list-group" id="subtasklist">
+                    {% if sublist.count > 0 %}
+                        {% for sub in sublist %}
+                        <li class="list-group-item list-group-item-light substask" data-pk="{{ sub.pk }}">
+                            <a class="article-title" href="/?id={{ sub.id }}">{{ sub.title }}</a>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <p class="article-content">No subtasks have been attached to this task</p>
+                    {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
     
 {% endblock content %}

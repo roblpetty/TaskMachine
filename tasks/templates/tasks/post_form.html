@@ -7,7 +7,7 @@
     <div id="pk" style='display: none;' data-pk="{{ post.pk }}"></div>
     <div class="col-md-8">
         <div class="content-section">
-            <form method="POST" class="article-metadata" id="entryform">
+            <form method="POST" id="entryform">
                 {% csrf_token %}
                 <fieldset class="form-group">
                 {{ form|crispy }}
@@ -16,13 +16,24 @@
                     <button class="btn btn-outline-info" type="submit" id='post'>Save Above Changes</button>
                 </div>
             </form>
-            <div>
-                <ul class="list-group" id="subtasklist">
-                {% for sub in sublist %}
-                    <li class="list-group-item list-group-item-light substask" data-pk="{{ sub.pk }}"><span class="article-title" >{{ sub.title }}</span><span class="remove-sub" onclick="removeSub({{ sub.pk }})">remove</span></li>    
-                {% endfor %}
-                </ul>
-                <button class="btn btn-outline-info" type="button" id="addTask">Add Subtask</button>
+        </div>
+        <div class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <h4>Subtasks</h4>
+                </div>
+                <div>
+                    <ul class="list-group" id="subtasklist">
+                    {% if sublist.count > 0 %}
+                        {% for sub in sublist %}
+                        <li class="list-group-item list-group-item-light substask" data-pk="{{ sub.pk }}"><span class="article-title" >{{ sub.title }}</span><span class="remove-sub" onclick="removeSub({{ sub.pk }})">remove</span></li>    
+                        {% endfor %}
+                    {% else %}
+                        <p class="article-content">No subtasks have been attached to this task</p>
+                    {% endif %}
+                    </ul>
+                    <button class="btn btn-outline-info" type="button" id="addTask">Add Subtask</button>
+                </div>
             </div>
         </div>
     </div>
@@ -76,6 +87,7 @@
                                 $('#subtasklist').append('<li class="list-group-item list-group-item-light" data-pk="'+taskId+'"><span class="article-title">'+tasktitle+'</span><span class="remove-sub" onclick="removeSub('+taskId+')">remove</span></li>')
                                 $('#taskListModal').modal('hide');
                                 addRemoveSub(taskId,true);
+                                $('#subtasklist').parent().find('p').remove();
                             });
                     }
                 });
@@ -137,8 +149,9 @@
     $(document).ready(function() {
 
         $('#id_content').summernote({
-            height: 300,                 // set editor height
-            minHeight: 200,             // set minimum height of editor
+                 // set editor height
+            minHeight: 250, 
+            maxHeight: 500,           // set minimum height of editor
         }
         );
     });
