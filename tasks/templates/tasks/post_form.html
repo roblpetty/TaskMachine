@@ -13,135 +13,33 @@
                 {{ form|crispy }}
                 </fieldset>
                 <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit" id='post'>Save Above Changes</button>
+                    <div style="text-align: center">
+                        <button class="btn btn-outline-info" type="submit" id='post'>Save Changes</button>
+                        <a class="btn btn-outline-secondary" href="/?id={{ post.pk }}">Cancel</a>
+                    </div>
                 </div>
             </form>
         </div>
+        {% if post.pk != 'new' %}
         <div class="media content-section">
-            <div class="media-body">
-                <div class="article-metadata">
-                    <h4>Subtasks</h4>
-                </div>
-                <div>
-                    <ul class="list-group" id="subtasklist">
-                    {% if sublist.count > 0 %}
-                        {% for sub in sublist %}
-                        <li class="list-group-item list-group-item-light substask" data-pk="{{ sub.pk }}"><span class="article-title" >{{ sub.title }}</span><span class="remove-sub" onclick="removeSub({{ sub.pk }})">remove</span></li>    
-                        {% endfor %}
-                    {% else %}
-                        <p class="article-content">No subtasks have been attached to this task</p>
-                    {% endif %}
-                    </ul>
-                    <button class="btn btn-outline-info" type="button" id="addTask">Add Subtask</button>
+                <div class="media-body">
+                    <div style="text-align: center">
+                        <a class="btn btn-outline-danger" href="{% url 'post-delete' post.id %}">DELETE TASK</a>
+                    </div>
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="taskListModal" tabindex="-1" role="dialog" aria-labelledby="taskListModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="taskListModalLabel">Select Task To Reference</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input class="form-control" id="myInputModal" type="text" placeholder="Search..">
-                    <ul class="list-group" id="modalList">
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>         
-      
+
 {% endblock content %}
 {% block js %}
 <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.js"></script>
 <script>
 
-    function removeSub(taskId){
-        $('#subtasklist li[data-pk="'+taskId+'"]').remove();
-        addRemoveSub(taskId,false);
-    }
-
-    $("#addTask").on('click',function() {
-        $('#modalList').empty();
-        $.ajax({
-            url: '/ajax/subtasks/',
-            data: {
-                'task': $('#pk').data('pk') //update this
-            },
-            datatype: 'json',
-            success: function(data) {
-                data = JSON.parse(data);
-                $.each(data, function() {
-                    tasktitle = this.fields.title;
-                    taskId = this.pk;
-                    if($('#subtasklist [data-pk="'+taskId+'"]').length == 0){
-                        $('#modalList').append('<li class="subtaskSelect list-group-item list-group-item-light" data-pk="'+taskId+'"><span class="article-title">'+tasktitle+'</span></li>')
-                            .find('[data-pk="'+taskId+'"]').on('click',function() {
-                                tasktitle = $(this).html();
-                                taskId = $(this).data('pk');
-                                $('#subtasklist').append('<li class="list-group-item list-group-item-light" data-pk="'+taskId+'"><span class="article-title">'+tasktitle+'</span><span class="remove-sub" onclick="removeSub('+taskId+')">remove</span></li>')
-                                $('#taskListModal').modal('hide');
-                                addRemoveSub(taskId,true);
-                                $('#subtasklist').parent().find('p').remove();
-                            });
-                    }
-                });
-            },
-            error: function(data) {
-                console.log("failed");
-            }
-        })
-        $('#taskListModal').modal('show');
-    });
-
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            // if not safe, set csrftoken
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
-
-
-    function addRemoveSub(taskId,add) {
-        csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-        $.ajax({
-            url: '/ajax/updatesubs/',
-            data: {
-                data: JSON.stringify({
-                    task: $('#pk').data('pk'), //update this
-                    child: taskId,
-                    action: add
-                })
-            },
-            datatype: 'json',
-            type: 'POST'
-        })
-    }
-
-
     $("#myInputLeftBar").on("keyup", function() {
         var value = $(this).val().toLowerCase();
         $("#leftBarList li").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    });
-
-
-    $("#myInputModal").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $("#taskListModal li").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });

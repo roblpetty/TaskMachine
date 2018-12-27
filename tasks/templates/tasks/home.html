@@ -3,6 +3,23 @@
 <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.css" rel="stylesheet">
 {% endblock header %}
 {% block content %}
+{% if post_list.count < 1 %}
+
+    <div class="col-md-8">
+        <div class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <h4>You have no tasks</h4>
+                </div>
+                <div>
+                    <a class="btn btn-outline-info" href="/post/new/">Create Task</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+{% csrf_token %}
+    <div id="pk" style='display: none;' data-pk="{{ post.pk }}"></div>
     <div class="col-md-8">
         <article class="media content-section">
             <div class="media-body">
@@ -17,7 +34,7 @@
                             <small class="text-muted">Due Date: {{ post.due_date }}</small>
                         </div>
                         <div class="attributes">
-                            <small class="text-muted">Competed: {% if post.complete %}Yes{% else %}No{% endif %}</small>
+                            <small class="text-muted">Competed: {% if post.complete %}Yes  <span class="green dot"></span>{% else %}No  <span class="red dot"></span>{% endif %}</small>
                             <br>
                             <small class="text-muted">Optional: {% if post.optional %}Yes{% else %}No{% endif %}</small>
                         </div>
@@ -40,24 +57,143 @@
                 <div class="article-metadata">
                     <h4>Subtasks</h4>
                 </div>
-                <div>
+                <div class="scroll">
                     <ul class="list-group" id="subtasklist">
                     {% if sublist.count > 0 %}
                         {% for sub in sublist %}
                         <li class="list-group-item list-group-item-light substask" data-pk="{{ sub.pk }}">
                             <a class="article-title" href="/?id={{ sub.id }}">{{ sub.title }}</a>
-                        </li>
+                            {% if sub.complete %}
+                            <span class="green dot"></span>
+                            {% else %}
+                            <span class="red dot"></span>
+                            {% endif %}
+                            <span class="btn btn-outline-danger remove-sub" onclick="removeSub({{ sub.pk }})">Remove</span></li>    
                         {% endfor %}
                     {% else %}
                         <p class="article-content">No subtasks have been attached to this task</p>
                     {% endif %}
                     </ul>
                 </div>
+                <button class="btn btn-outline-info" type="button" id="addTask">Add Subtask</button>
             </div>
         </div>
     </div>
-    
+    <!-- Modal -->
+    <div class="modal fade" id="taskListModal" tabindex="-1" role="dialog" aria-labelledby="taskListModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskListModalLabel">Select Task To Reference*</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control" id="myInputModal" type="text" placeholder="Search..">
+                    <ul class="list-group" id="modalList">
+                    </ul>
+                </div>
+                <div class="modal-body text-muted">
+                    * Task that are dependents of this task are not included in this list and cannot be added to this task
+                </div>
+            </div>
+        </div>
+    </div>         
+              
+{% endif %} 
 {% endblock content %}
 {% block js %}
-<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.js"></script>
+    <script>
+
+        function removeSub(taskId){
+            $('#subtasklist li[data-pk="'+taskId+'"]').remove();
+            addRemoveSub(taskId,false);
+        }
+    
+        $("#addTask").on('click',function() {
+            $('#modalList').empty();
+
+            $.ajax({
+                url: '/ajax/subtasks/',
+                data: {
+                    'task': $('#pk').data('pk') //update this
+                },
+                datatype: 'json',
+                success: function(data) {
+                    data = JSON.parse(data);
+                    $.each(data, function() {
+                        tasktitle = this.fields.title;
+                        taskId = this.pk;
+                        
+                        if($('#subtasklist [data-pk="'+taskId+'"]').length == 0){
+                            console.log(taskId);
+                            $('#modalList').append('<li class="subtaskSelect list-group-item list-group-item-light" data-pk="'+taskId+'"><span class="article-title">'+tasktitle+'</span></li>')
+                                .find('[data-pk="'+taskId+'"]').on('click',function() {
+                                    tasktitle = $(this).html();
+                                    taskId = $(this).data('pk');
+                                    $('#subtasklist').append('<li class="list-group-item list-group-item-light" data-pk="'+taskId+'"><a class="article-title" href="/?id='+taskId+'">'+tasktitle+'</a><span class="btn btn-outline-danger remove-sub" onclick="removeSub('+taskId+')">Remove</span></li>')
+                                    $('#taskListModal').modal('hide');
+                                    addRemoveSub(taskId,true);
+                                    $('#subtasklist').parent().find('p').remove();
+                                });
+                        }
+                    });
+                    if($('#modalList subtask').length < 1){
+                        console.log("BOOOM");
+                        $('#modalList').append('<p>There are no potential tasks to be added as sub task.</p><a class="btn btn-outline-info" href="/post/new/">Create New Task?</a>')
+                    }
+                },
+                error: function(data) {
+                    console.log("failed");
+                }
+            })
+            $('#taskListModal').modal('show');
+        });
+    
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+    
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                // if not safe, set csrftoken
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    
+    
+        function addRemoveSub(taskId,add) {
+            csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            $.ajax({
+                url: '/ajax/updatesubs/',
+                data: {
+                    data: JSON.stringify({
+                        task: $('#pk').data('pk'), //update this
+                        child: taskId,
+                        action: add
+                    })
+                },
+                datatype: 'json',
+                type: 'POST'
+            })
+        }
+
+        $("#myInputLeftBar").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#leftBarList li").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        $("#myInputModal").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#taskListModal li").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    </script>
 {% endblock js %}

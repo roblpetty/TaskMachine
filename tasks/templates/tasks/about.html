@@ -1,7 +1,68 @@
 {% extends "tasks/base.html" %}
 {% block content %}
-    <div class="col-md-8">
-        <h1>About Page</h1>
+<div class="col-md-1"></div>
+<div class="col-md-9">   
+    <div class="content-section article-metadata">
+        <div class="article-metadata" style="text-align: center;">
+            <h1>A better way to get tasks done</h1>
+        </div>
+        <p>
+                
+        Task Machine is a personal project/task management system. 
+        This system will help you do the following to get you projects done:
+        <br>
+        <ul>
+            <li>Create detailed tasks</li>
+            <li>Create custom heirarchy of tasks</li>
+            <li>Track completion of the tasks</li>
+        </ul>
+        
+        </p>
+        <p>
+            <img class="fillwidth" src="/media/TMscreen.png" alt="Sign Up Free!">
+        </p>
+        <div class="article-metadata" style="text-align: center;">
+            <h1>Customize</h1>
+
+        </div>
+        Task Machine's text editor will allow you to make your task entries as detailed as you like.
+        You can change font, highlighting and you can even insert images and tables.
+        <p>
+            <div style="text-align: center">
+                <img class="fillwidth" src="/media/editor.png" alt="Sign Up Free!">
+            </div>
+        </p>
+        {% if not user.is_authenticated %}
+        <p>
+            <a class="btn btn-outline-info" href="/register">Sign Up for Free!</a>
+        </p>
+        {% endif %}
     </div>
+    <div class="content-section article-metadata"">
+        <div class="article-metadata" style="text-align: center;">
+            <h1>Task Machine's Future</h1>
+        </div>
+        <p>
+            As Task Machine is a brand new product that is still under development, you can to see many new improvements in the near future such as:
+            <ul>
+                <li>Visualiztions of the task hierarchy</li>
+                <li>Calendar and notifications of tasks</li>
+                <li>Ability to add subtask or reference entries in body of task text</li>
+                <li>Support for multiple user colaboration</li>
+            </ul>
+        </p>    
+            If you have suggestions for improvements please see the contact section below.
+        
+    </div>
+    <div class="content-section article-metadata" style="text-align: center;">
+        <div class="article-metadata" style="text-align: center;">
+            <h1>Contact</h1>
+        </div>
+        <p>If you have any question, comments, or suggestions please contact site owner, Robert Petty at: 
+            <a href="mailto:roblpetty@taskmachine.net">roblpetty@taskmachine.net</a>
+        </p>
+    </div>
+
+</div>
 {% endblock content %}
     

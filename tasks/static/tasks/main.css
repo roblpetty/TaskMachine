@@ -86,7 +86,8 @@ a.article-title:hover {
 
 div.scroll {
     overflow: auto;
-    height: 75vh;
+    max-height: 400px;
+    margin: 20px 0 20px 0;
 }
 
 div.edit {
@@ -107,4 +108,35 @@ div.attributes{
 
 div.relative{
     position: relative;
+}
+.dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: baseline;
+  }
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
+.remove-sub {
+    float: right;
+}
+
+li.subtaskSelect:hover {
+    cursor: pointer;
+}
+
+.fillwidth {
+ 
+    max-width: 100%;
+    height: auto;
+    opacity: .75; 
+    text-align: center;
 }
