@@ -1,2 +1,12 @@
 .vscode/
+venv/
+db.sqlit3
+db.sqlite3
 taskMachine/settings.py
+users/migrations/
+users/__pycache__
+tasks/migrations/
+task/__pycache__
+taskMachine.__pycache__
+
+
