@@ -3,8 +3,6 @@ venv/
 db.sqlit3
 db.sqlite3
 taskMachine/settings.py
-users/migrations/
-tasks/migrations/
 
 
 
