@@ -2,7 +2,6 @@ __pycache__/
 *.py[cod]
 .vscode/
 venv/
-db.sqlit3
 db.sqlite3
 taskMachine/settings.py
 .secrets

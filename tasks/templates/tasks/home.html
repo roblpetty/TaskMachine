@@ -127,7 +127,6 @@
                         taskId = this.pk;
                         
                         if($('#subtasklist [data-pk="'+taskId+'"]').length == 0){
-                            console.log(taskId);
                             $('#modalList').append('<li class="subtaskSelect list-group-item list-group-item-light" data-pk="'+taskId+'"><span class="article-title">'+tasktitle+'</span></li>')
                                 .find('[data-pk="'+taskId+'"]').on('click',function() {
                                     tasktitle = $(this).html();
@@ -139,10 +138,10 @@
                                 });
                         }
                     });
-                    if($('#modalList subtask').length < 1){
-                        console.log("BOOOM");
-                        $('#modalList').append('<p>There are no potential tasks to be added as sub task.</p><a class="btn btn-outline-info" href="/post/new/">Create New Task?</a>')
+                    if($('#modalList .subtaskSelect').length < 1){
+                        $('#modalList').append('<p>There are no potential tasks to be added as sub task.</p>')
                     }
+                    $('#modalList').append('<a class="btn btn-outline-info" href="/post/new/">Create New Task?</a>')
                 },
                 error: function(data) {
                     console.log("failed");
