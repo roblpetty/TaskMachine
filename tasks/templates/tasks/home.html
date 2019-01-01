@@ -34,11 +34,10 @@
                             <small class="text-muted">Due Date: {{ post.due_date }}</small>
                         </div>
                         <div class="attributes">
-                            <small class="text-muted">Competed: {% if post.complete %}Yes  <span class="green dot"></span>{% else %}No  <span class="red dot"></span>{% endif %}</small>
+                            <small class="text-muted">Completed: {% if post.complete %}Yes  <span class="green dot"></span>{% else %}No  <span class="red dot"></span>{% endif %}</small>
                             <br>
                             <small class="text-muted">Optional: {% if post.optional %}Yes{% else %}No{% endif %}</small>
                         </div>
-
                     </div>
                 </div>
                 <div class="edit">
@@ -177,7 +176,11 @@
                     })
                 },
                 datatype: 'json',
-                type: 'POST'
+                type: 'POST',
+                success: function(data) {
+                    data = JSON.parse(data);
+                    console.log(data)    
+                }
             })
         }
 

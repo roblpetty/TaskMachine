@@ -92,8 +92,10 @@ def updateSubs(request):
             curr_post.children.add(Post.objects.get(pk=data['child']))
         else:
             curr_post.children.remove(Post.objects.get(pk=data['child']))
-        return JsonResponse("", safe=False)
-    
+        curr_post.setCompletable()
+        completable = Post.objects.get(id=curr_post.id).completable
+        return JsonResponse([completable], safe=False)
+
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
@@ -105,7 +107,6 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return kwargs
 
     def get_success_url(self):
-        # Assuming there is a ForeignKey from Comment to Post in your model
         return '/'
 
     def form_valid(self, form):

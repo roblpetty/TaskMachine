@@ -16,8 +16,8 @@ class Post(models.Model):
         (False,'No'),
     )
     complete = models.BooleanField(blank=False,choices=choices,default=False)
+    completable = models.BooleanField(blank=False,default=True)
     #complete_date = models.DateField(choices=choices)
-    
     optional = models.BooleanField(choices=choices,default=False)
 
     class Meta:
@@ -25,3 +25,14 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def setCompletable(self, delete_id=None):
+        incomplete_children = self.children.filter(complete=False,optional=False)
+        if delete_id:
+            incomplete_children = incomplete_children.exclude(pk=delete_id)
+        qs = Post.objects.filter(id=self.id)
+        if incomplete_children.count() > 0:
+            qs.update(complete=False,completable=False)
+        else:
+            qs.update(completable=True)
+

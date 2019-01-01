@@ -14,7 +14,7 @@
                 </fieldset>
                 <div class="form-group">
                     <div style="text-align: center">
-                        <button class="btn btn-outline-info" type="submit" id='post'>Save Changes</button>
+                        <button class="btn btn-outline-info" type="button" id='post'>Save Changes</button>
                         <a class="btn btn-outline-secondary" href="/?id={{ post.pk }}">Cancel</a>
                     </div>
                 </div>
@@ -43,6 +43,11 @@
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
+
+    $("#post").on('click',function(){
+        $("#id_complete").prop('disabled',false);
+        $("#entryform").submit();
+    })
 
     $(document).ready(function() {
 
