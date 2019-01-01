@@ -124,16 +124,23 @@
                     $.each(data, function() {
                         tasktitle = this.fields.title;
                         taskId = this.pk;
+                        taskComplete = this.fields.complete;
                         
                         if($('#subtasklist [data-pk="'+taskId+'"]').length == 0){
-                            $('#modalList').append('<li class="subtaskSelect list-group-item list-group-item-light" data-pk="'+taskId+'"><span class="article-title">'+tasktitle+'</span></li>')
+                            $('#modalList').append('<li class="subtaskSelect list-group-item list-group-item-light" data-pk="'+taskId+'" data-complete="'+taskComplete+'"><span class="article-title">'+tasktitle+'</span></li>')
                                 .find('[data-pk="'+taskId+'"]').on('click',function() {
                                     tasktitle = $(this).html();
                                     taskId = $(this).data('pk');
-                                    $('#subtasklist').append('<li class="list-group-item list-group-item-light" data-pk="'+taskId+'"><a class="article-title" href="/?id='+taskId+'">'+tasktitle+'</a><span class="btn btn-outline-danger remove-sub" onclick="removeSub('+taskId+')">Remove</span></li>')
+                                    taskComplete = $(this).data('complete');
+                                    if(taskComplete){
+                                        $('#subtasklist').append('<li class="list-group-item list-group-item-light" data-pk="'+taskId+'"><a class="article-title" href="/?id='+taskId+'">'+tasktitle+' </a><span class="green dot"></span><span class="btn btn-outline-danger remove-sub" onclick="removeSub('+taskId+')">Remove</span></li>')
+                                    }else{
+                                        $('#subtasklist').append('<li class="list-group-item list-group-item-light" data-pk="'+taskId+'"><a class="article-title" href="/?id='+taskId+'">'+tasktitle+' /a><span class="red dot"></span><span class="btn btn-outline-danger remove-sub" onclick="removeSub('+taskId+')">Remove</span></li>')
+                                    }
                                     $('#taskListModal').modal('hide');
                                     addRemoveSub(taskId,true);
                                     $('#subtasklist').parent().find('p').remove();
+                                    
                                 });
                         }
                     });
@@ -177,10 +184,6 @@
                 },
                 datatype: 'json',
                 type: 'POST',
-                success: function(data) {
-                    data = JSON.parse(data);
-                    console.log(data)    
-                }
             })
         }
 
