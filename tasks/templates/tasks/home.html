@@ -135,7 +135,7 @@
                                     if(taskComplete){
                                         $('#subtasklist').append('<li class="list-group-item list-group-item-light" data-pk="'+taskId+'"><a class="article-title" href="/?id='+taskId+'">'+tasktitle+' </a><span class="green dot"></span><span class="btn btn-outline-danger remove-sub" onclick="removeSub('+taskId+')">Remove</span></li>')
                                     }else{
-                                        $('#subtasklist').append('<li class="list-group-item list-group-item-light" data-pk="'+taskId+'"><a class="article-title" href="/?id='+taskId+'">'+tasktitle+' /a><span class="red dot"></span><span class="btn btn-outline-danger remove-sub" onclick="removeSub('+taskId+')">Remove</span></li>')
+                                        $('#subtasklist').append('<li class="list-group-item list-group-item-light" data-pk="'+taskId+'"><a class="article-title" href="/?id='+taskId+'">'+tasktitle+' </a><span class="red dot"></span><span class="btn btn-outline-danger remove-sub" onclick="removeSub('+taskId+')">Remove</span></li>')
                                     }
                                     $('#taskListModal').modal('hide');
                                     addRemoveSub(taskId,true);
