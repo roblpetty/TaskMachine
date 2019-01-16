@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
+from datetime import date
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
@@ -36,3 +37,22 @@ class Post(models.Model):
         else:
             qs.update(completable=True)
 
+    @property
+    def overdue(self):
+        if self.due_date is None:
+            return False
+        else:
+            return self.due_date < date.today()
+
+    @property
+    def level(self):
+        has_child = self.children.count() > 0
+        has_parent = Post.objects.filter(children__id=self.id).count() > 0
+        if has_child and has_parent:
+            return 'mid'
+        elif not has_child and has_parent:
+            return 'bottom'
+        elif has_child and not has_parent:
+            return 'top'
+        else:
+            return 'both'

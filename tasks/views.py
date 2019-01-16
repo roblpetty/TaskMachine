@@ -11,6 +11,7 @@ import datetime
 import json
 from django.db import IntegrityError
 from django.http import HttpResponse
+from django.db.models.functions import Lower
 
 class PostListView(LoginRequiredMixin,ListView):
     model = Post
@@ -20,7 +21,7 @@ class PostListView(LoginRequiredMixin,ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PostListView, self).get_context_data(**kwargs)
-        context['post_list'] = Post.objects.all().filter(author=self.request.user)
+        context['post_list'] = Post.objects.order_by(Lower('title')).all().filter(author=self.request.user)
         taskId = self.request.GET.get('id')
         UserPosts = Post.objects.filter(author=self.request.user)
         if UserPosts.count() < 1:

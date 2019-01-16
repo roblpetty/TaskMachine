@@ -140,3 +140,17 @@ li.subtaskSelect:hover {
     opacity: .75; 
     text-align: center;
 }
+
+.list-date{
+    display: block;
+    font-size: x-small;
+}
+
+.button-container div{
+    display: inline-block;
+}
+.button-container button{
+    padding: 0 4px 0 4px;
+    display: inline-block;
+}
+

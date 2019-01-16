@@ -140,3 +140,7 @@ li.subtaskSelect:hover {
     opacity: .75; 
     text-align: center;
 }
+
+.list-date{
+    display: block;
+}

@@ -16,4 +16,99 @@
         </div>
     </div>
 {% endblock content %}
-    
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-bs4.js"></script>
+<script>
+
+
+
+$("#sort-choice li").click( function() {
+            var sortType = $(this).data("value");
+            var ascend = $("#sort-choice .ascend-descend").text().charCodeAt(0) == 8593;
+            $("#sort-choice .dropdown-toggle").text(sortType.replace("-"," "));
+            sortList(sortType, ascend)
+        });
+
+        $("#sort-choice .ascend-descend").click( function() {
+            var sortType = $("#sort-choice .dropdown-toggle").text().toLocaleLowerCase().replace(' ','-');
+            var ascend = $(this).text().charCodeAt(0) == 8593 ? false : true;
+            $("#sort-choice .ascend-descend").html(ascend ? "&#8593" : "&#8595;")
+            sortList(sortType, ascend)
+        });
+
+        function sortList(sortType,ascend){
+            var $list = $("#leftBarList");
+            var $listLi = $('li',$list);
+            sortType = sortType.toLocaleLowerCase();
+            if(sortType == 'abc'){
+                $listLi.sort(function(a,b){
+                    var keyA = $(a).find(".post-title").text().toUpperCase();
+                    var keyB = $(b).find(".post-title").text().toUpperCase();
+                    if (ascend){
+                        return keyA > keyB ? 1 : keyA < keyB ? -1 : 0;
+                    } else {
+                        return keyA < keyB ? 1 : keyA > keyB ? -1 : 0;
+                    }
+                });
+            }else{
+                $listLi.sort(function(a,b){
+                    var keyA = $(a).find("." + sortType);
+                    keyA = keyA.length == 0 ? 0 : Date.parse(keyA.data(sortType).replace("p.m.",""));
+                    var keyB = $(b).find("." + sortType);
+                    keyB = keyB.length == 0 ? 0 : Date.parse(keyB.data(sortType).replace("p.m.",""));
+                    if (ascend){
+                        return keyA > keyB ? 1 : keyA < keyB ? -1 : 0;
+                    } else {
+                        return keyA < keyB ? 1 : keyA > keyB ? -1 : 0;
+                    }
+                });
+            }
+            $.each($listLi, function(index,row) {
+                $list.append(row);
+            });
+        }
+
+        $("#myInputLeftBar").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#leftBarList li").filter(function() {
+                return $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });        
+
+        $("#filter-choice input").on("change", function() {
+            var top = $("#filter-choice input[name='top']").prop("checked");
+            var mid = $("#filter-choice input[name='mid']").prop("checked");
+            var bottom = $("#filter-choice input[name='bottom']").prop("checked");
+            var done = $("#filter-choice input[name='done']").prop("checked");
+            var incomplete = $("#filter-choice input[name='incomplete']").prop("checked");
+            var overdue = $("#filter-choice input[name='overdue']").prop("checked");
+            var current = $("#filter-choice input[name='current']").prop("checked");
+
+            var value = $(this).val().toLowerCase();
+            $("#leftBarList li").hide();
+            $("#leftBarList li").filter(function() {
+               
+                var fields = $(this).data('fields')
+
+                var level = (
+                    (top ? (fields.indexOf('top') > -1 || fields.indexOf('both')) > -1 : false) ||
+                    (mid ? (fields.indexOf('mid') > -1 || fields.indexOf('both')) > -1 : false) ||
+                    (bottom ? fields.indexOf('bottom') > -1 : false)
+                );
+                console.log(level);
+                var completion =  (
+                    (done ? fields.indexOf('done') > -1 : false) ||
+                    (incomplete ? fields.indexOf('incomplete') > -1 : false)
+                );
+                var timeStatus = (
+                    (overdue ? fields.indexOf('overdue') > -1 : false) ||
+                    (current ? fields.indexOf('current') > -1 : false)
+                );
+                
+                return level && completion && timeStatus;
+            }).show();
+        });
+
+</script>
+  
+{% endblock js %}  
