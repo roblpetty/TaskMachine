@@ -2,14 +2,13 @@
 {% block leftBar %}
 <div class="col-md-4 leftbar" >
     <div class="content-section" id="leftBar">
-        <h3>Tasks</h3>
         <p class='text-muted'>
             <input class="form-control" id="myInputLeftBar" type="text" placeholder="Search..">
             <div class="button-container">
                 
                 <div id="sort-choice" class="dropdown">
                     <button class="btn ascend-descend" type="button" >&uarr;</button>
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">ABC<span class="caret"></span></button>
+                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">ABC<span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         <li data-value="ABC"><a href="javascript:void(0)">ABC</a></li>
                         <li data-value="Due-Date"><a href="javascript:void(0)">Due Date</a></li>
@@ -18,7 +17,7 @@
                     </ul>
                 </div>
                 <div id="filter-choice" class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Filters<span class="caret"></span></button>
+                    <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Filters<span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">Task Level</li>
                         <li><input type="checkbox" name="top" checked>Top Level Tasks</li>
@@ -33,11 +32,11 @@
                     </ul>
                 </div>
             </div>
-            <div class="scroll">
+            <div class="scroll-leftbar">
                 <ul class="list-group" id="leftBarList">
                 {% for post in post_list %}
                 <li class="list-group-item list-group-item-light" data-fields="{% if post.complete %}done{%else%}incomplete{%endif%},{%if post.overdue %}overdue{%else%}current{%endif%},{{post.level}}">
-                    <a href="/?id={{ post.id }}">
+                    <a href="/main/?id={{ post.id }}">
                         <span class="post-title">
                         {% if post.complete %}
                             <span class="green dot"></span>{% else %}<span class="red dot"></span>

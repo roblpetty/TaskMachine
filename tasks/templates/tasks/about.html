@@ -1,52 +1,38 @@
 {% extends "tasks/base.html" %}
 {% block content %}
-<div class="col-md-1"></div>
-<div class="col-md-9">   
-    <div class="content-section article-metadata">
-        <div class="article-metadata" style="text-align: center;">
-            <h1>A better way to get tasks done</h1>
-        </div>
-        <p>
-                
-        Task Machine is a personal project/task management system. 
-        This system will help you do the following to get you projects done:
+<div class="w-100 about" style="text-align: center;">   
+    <div class="aboutBG-2" >
         <br>
-        <ul>
-            <li>Create detailed tasks</li>
-            <li>Create custom heirarchy of tasks</li>
-            <li>Track completion of the tasks</li>
-        </ul>
-        
-        </p>
+        <h1>A better way to get tasks done</h1>     
+        Task Machine is a personal project/task management system that will help you get your projects done right. 
         <p>
             <img class="fillwidth" src="/media/TMscreen.png" alt="Sign Up Free!">
         </p>
-        <div class="article-metadata" style="text-align: center;">
-            <h1>Customize</h1>
-
-        </div>
+    </div>
+    <div class="aboutBG-3" >
+        <br>
+        <h1>Customize</h1>
         Task Machine's text editor will allow you to make your task entries as detailed as you like.
+        <br>
         You can change font, highlighting and you can even insert images and tables.
         <p>
-            <div style="text-align: center">
-                <img class="fillwidth" src="/media/editor.png" alt="Sign Up Free!">
-            </div>
+            <img class="fillwidth" src="/media/editor.png" alt="Sign Up Free!">
         </p>
         {% if not user.is_authenticated %}
-        <p style="text-align: center">
+        <p>
             <a class="btn btn-outline-info" href="/register">Sign Up for Free!</a>
         </p>
         {% endif %}
+        <br>
     </div>
-    <div class="content-section article-metadata"">
-        <div class="article-metadata" style="text-align: center;">
-            <h1>Task Machine's Future</h1>
-        </div>
+    
+    <div >
+        <br>
+        <h1>Task Machine's Future</h1>
         <p>
             Since Task Machine is a brand new product that is still under development, you can expect to see many new improvements in the near future such as:
             <ul>
                 <li>Visualizations of the task hierarchy</li>
-                <li>Improved task filtering and sorting abilities in left hand menu</li>
                 <li>Calendar and notifications of tasks</li>
                 <li>Ability to add subtask or reference entries in body of task text</li>
                 <li>Support for multiple user colaboration</li>
@@ -55,10 +41,9 @@
             If you have suggestions for improvements please see the contact section below.
         
     </div>
-    <div class="content-section article-metadata" style="text-align: center;">
-        <div class="article-metadata" style="text-align: center;">
-            <h1>Contact</h1>
-        </div>
+    <div  class="aboutBG-4">
+        <br>
+        <h1>Contact</h1>
         <p>If you have any question, comments, or suggestions please contact site owner, Robert Petty at: 
             <a href="mailto:rob.petty@taskmachine.net">rob.petty@taskmachine.net</a>
         </p>

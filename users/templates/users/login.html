@@ -1,44 +1,26 @@
 {% extends "tasks/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="col-md-3">    
-        <div class="content-section">
-            <form method="POST">
-                {% csrf_token %}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Login</legend>
-                    {{ form|crispy }}
-                </fieldset>
-                <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit">Login</button>
-                <small class="text-muted ml-2">
-                    <a href="{% url 'password_reset' %}">Forgot Password?</a>
-                </small>
-                </div>
-            </form>
-            <div class="border-top pt-3">
-                <small class="text-muted">
-                    Need an account? <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a>
-                </small>
-            </div>
+<div class="col-md-4"></div>
+<div class="content-section bordered col-md-4">
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Login</legend>
+            {{ form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info" type="submit">Login</button>
+        <small class="text-muted ml-2">
+            <a href="{% url 'password_reset' %}">Forgot Password?</a>
+        </small>
         </div>
+    </form>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Need an account? <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a>
+        </small>
     </div>
-    <div class="col-md-9">   
-            <div class="content-section" style="text-align: center;">
-                <h1>A better way to get tasks done</h1>
-                <p>
-                    Task Machine is a personal project/task management system. It allows you to organize all your tasks into custom hierarchies and track your progress.
-                </p>
-                <p>
-                    <img class="fillwidth" src="/media/TMscreen.png" alt="Sign Up Free!">
-                </p>
-
-                <p>
-                    <a class="btn btn-outline-secondary" href="/about">Learn More</a>
-                    <a class="btn btn-outline-info" href="/register">Sign Up for Free!</a>
-                </p>
-            </div>
-
-    </div>
+</div>
 {% endblock content %}
     

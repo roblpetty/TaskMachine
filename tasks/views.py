@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 from django.http import JsonResponse
 from django.utils.timezone import utc
 from django.contrib.auth.models import User
@@ -10,12 +10,12 @@ from django.core import serializers
 import datetime
 import json
 from django.db import IntegrityError
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models.functions import Lower
 
 class PostListView(LoginRequiredMixin,ListView):
     model = Post
-    template_name = 'tasks/home.html'
+    template_name = 'tasks/main.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
 
@@ -23,6 +23,7 @@ class PostListView(LoginRequiredMixin,ListView):
         context = super(PostListView, self).get_context_data(**kwargs)
         context['post_list'] = Post.objects.order_by(Lower('title')).all().filter(author=self.request.user)
         taskId = self.request.GET.get('id')
+        print(taskId)
         UserPosts = Post.objects.filter(author=self.request.user)
         if UserPosts.count() < 1:
             context['post'] = None
@@ -46,7 +47,7 @@ class PostListView(LoginRequiredMixin,ListView):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = CreatePostForm
-    success_url = '/'
+    success_url = '/main/'
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super(PostCreateView, self).get_form_kwargs(*args, **kwargs)
@@ -108,7 +109,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return kwargs
 
     def get_success_url(self):
-        return '/'
+        return '/main/'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -129,7 +130,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    success_url = '/'
+    success_url = '/main/'
 
     def test_func(self):
         post = self.get_object()
@@ -144,3 +145,13 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def about(request):
     return render(request, 'tasks/about.html', {'title': 'About'})
+
+class HomeView(TemplateView):
+    template_name = "tasks/home.html"
+    
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect('main/')
+        return super(HomeView, self).get(request, *args, **kwargs)
+
+
